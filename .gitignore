@@ -1,0 +1,5 @@
+*.pyc
+.idea/
+*.txt
+music_api/migrations/
+*.sqllite3
