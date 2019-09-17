@@ -1,4 +1,4 @@
-from .models import Music, Contributor, Provider
+from .models import Music, Contributor, Source, Title
 from rest_framework import serializers
 
 
@@ -8,15 +8,21 @@ class ContribSerializer(serializers.ModelSerializer):
         fields = ('name')
 
 
-class ProvideSerializer(serializers.ModelSerializer):
+class SourceSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Provider
+        model = Source
         fields = ('name')
 
+class TitleSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Title
+        fields = '__all__'
+
 class MusicSerializer(serializers.ModelSerializer):
+    titles = TitleSerializer
     contributors = ContribSerializer
-    providers = ProvideSerializer
+    providers = SourceSerializer
     class Meta:
         model = Music
-        fields = ('iswc', 'contributors', 'song_name', 'providers')
+        fields = ('iswc', 'contributors', 'titles', 'sources')
         depth = 1

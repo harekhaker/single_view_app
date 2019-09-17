@@ -3,3 +3,4 @@
 *.txt
 music_api/migrations/
 *.sqllite3
+*.csv
