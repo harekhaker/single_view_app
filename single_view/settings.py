@@ -15,6 +15,11 @@ import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+_PATH = os.path.abspath(os.path.dirname(__file__))
+
+MEDIA_ROOT = os.path.join(_PATH, 'files', 'unprocessed_files/')
+MEDIA_PROCESSED = os.path.join(_PATH, 'files', 'processed_files/')
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
@@ -46,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -83,10 +88,10 @@ DATABASES = {
     # }
    'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'fv_music',
-        'HOST': '192.168.168.152',
-       'USER' : 'vlk_',
-       'PASSWORD' : 'mypass'
+        'NAME': 'fv_music_1',
+        'HOST': '192.168.1.28',
+        'USER' : 'vlk_',
+        'PASSWORD' : 'mypass'
     }
 }
 

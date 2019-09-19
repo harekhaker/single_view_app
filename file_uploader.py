@@ -12,20 +12,26 @@ from music_api.models import Music, Contributor, Source, Title
 
 def process_titles(unit):
     title_pairs = dict()
+    exist_titles = list()
     translator = Translator()
     for title in unit['title'].unique():
-        title_pair = dict()
-        lang = translator.detect(title).lang
-        title_pair.update({lang : dict()})
-        title_pair[lang]['title'] = {title:dict()}
-        title_pair[lang]['translation'] = translator.translate(title).text
-        if title_pairs.get(lang):
-            if title_pairs.get(lang)['translation'] == title_pair[lang]['translation']:
-                title_pairs.update(title_pair)
-        else:
-            title_pairs.update(title_pair)
+        if list(Title.objects.filter(title=title)):
+            exist_titles.append(Title.objects.get(title=title))
 
-    return list([Title(title=v['title'], lang=k, translation=v['translation']) for k, v in title_pairs.items()])
+        else:
+            title_pair = dict()
+            lang = translator.detect(title).lang
+            title_pair.update({lang : dict()})
+            title_pair[lang]['title'] = title
+            title_pair[lang]['translation'] = translator.translate(title).text
+            if title_pairs.get(lang):
+                if title_pairs.get(lang)['translation'] == title_pair[lang]['translation']:
+                    title_pairs.update(title_pair)
+            else:
+                title_pairs.update(title_pair)
+    new_titles = list([Title(title=v['title'], lang=k, translation=v['translation']) for k, v in title_pairs.items()])
+
+    return new_titles + exist_titles
 
 def get_iniciales(name):
     return set([i[0] for i in name.split(' ')])
@@ -77,8 +83,8 @@ def get_sources(unit):
     return sources
 
 
-def main(file):
-    df = pd.read_csv(file, sep=",")  # Normalize total_bedrooms column
+def process_file(file):
+    df = pd.read_csv(file, sep=",")
 
     for iswc in list(df['iswc'].unique()):
         unit = df[df['iswc'] == iswc]
@@ -105,12 +111,4 @@ def main(file):
 
         music.save()
 
-        #TODO: bulk commit as example:
-        # @transaction.commit_manually
-        # def manual_transaction():
-        #     for record in Record.objects.all():
-        #         record.name = "String without number"
-        #         record.save()
-        #     transaction.commit()
-
-main('single_view/works_metadata.csv')
+        #TODO: bulk commit @transaction.commit_manually

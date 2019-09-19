@@ -1,21 +1,19 @@
+import os
+import ntpath
 import time
+import datetime
 from watchdog.observers import Observer
 from watchdog.events import PatternMatchingEventHandler
-from file_uploader import insert_new
-from .config import *
-import os
+from file_uploader import process_file
+from django.conf import settings
 
+for unprocessed_file in os.listdir(settings.MEDIA_ROOT):
+    if not '.py' in unprocessed_file:
+        unprocessed_file_path = os.path.join(settings.MEDIA_ROOT, unprocessed_file)
+        process_file(unprocessed_file_path)
+        process_file_name = unprocessed_file + datetime.datetime.now().isoformat()
+        os.rename(unprocessed_file_path, os.path.join(settings.MEDIA_PROCESSED, process_file_name))
 
-
-
-try:
-    os.mkdir(WATCHED_DIR)
-
-except FileExistsError:
-        pass
-
-for update_func in update_tor, update_anonymization, update_malicious, update_proxy:
-    update_func()
 
 patterns = "*"
 ignore_patterns = ""
@@ -25,7 +23,9 @@ file_adding_event_handler = PatternMatchingEventHandler(patterns, ignore_pattern
 
 
 def on_created(event):
-    insert_new(event.src_path)
+    process_file(event.src_path)
+    process_file_name = ntpath.basename(event.src_path) + datetime.datetime.now().isoformat()
+    os.rename(event.src_path, os.path.join(settings.MEDIA_PROCESSED, process_file_name))
 
 
 file_adding_event_handler.on_created = on_created
@@ -34,8 +34,7 @@ go_recursively = True
 
 music_observer = Observer()
 
-
-music_observer.schedule(file_adding_event_handler, WATCHED_DIR, recursive=go_recursively)
+music_observer.schedule(file_adding_event_handler, settings.MEDIA_ROOT, recursive=go_recursively)
 
 music_observer.start()
 
