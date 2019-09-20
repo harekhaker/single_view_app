@@ -13,6 +13,9 @@ services:
     volumes:
        - ./:/django-docker/
 
+    depends_on:
+       - db
+
   watchdog:
     build: "."
     command: >
@@ -20,4 +23,7 @@ services:
 
     volumes:
        - ./:/django-docker/
+
+    depends_on:
+       - db
 version: "2"
