@@ -1,0 +1,23 @@
+services:
+  db:
+    image: postgres
+
+  web:
+    build: "."
+    command: >
+       bash -c "./manage.py makemigrations music_api &&
+                ./manage.py migrate &&
+                nohup ./manage.py runserver 0.0.0.0:8990 > my_output.log"
+    ports:
+       - "8990:8990"
+    volumes:
+       - ./:/django-docker/
+
+  watchdog:
+    build: "."
+    command: >
+       bash -c "python3 files_watchdog.py"
+
+    volumes:
+       - ./:/django-docker/
+version: "2"

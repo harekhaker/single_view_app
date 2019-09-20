@@ -9,7 +9,6 @@ class Title(models.Model):
     def __str__(self):
         return self.title
 
-
 class Contributor(models.Model):
     name = models.TextField(unique=True)
 
