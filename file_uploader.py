@@ -2,6 +2,7 @@ import os
 from googletrans import Translator
 import pandas as pd
 from fuzzywuzzy import process
+import numpy
 
 import django
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'single_view.settings')
@@ -87,6 +88,9 @@ def process_file(file):
     df = pd.read_csv(file, sep=",")
 
     for iswc in list(df['iswc'].unique()):
+        if numpy.isnan(iswc):
+            continue
+
         unit = df[df['iswc'] == iswc]
 
         music = list(Music.objects.filter(iswc=iswc))

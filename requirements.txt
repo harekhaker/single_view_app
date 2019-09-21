@@ -1,0 +1,10 @@
+django
+djangorestframework
+djangorestframework-csv
+pandas
+watchdog
+fuzzywuzzy
+googletrans
+psycopg2
+python-Levenshtein
+
